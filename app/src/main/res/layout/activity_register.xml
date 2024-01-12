@@ -28,6 +28,7 @@
             android:textStyle="bold" />
 
         <FrameLayout
+            android:id="@+id/profileImgLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp">
@@ -41,6 +42,7 @@
                 app:riv_oval="true"/>
 
             <TextView
+                android:id="@+id/addImgTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add Picture"
@@ -129,20 +131,34 @@
             android:textSize="@dimen/_11sdp"
             tools:ignore="TextSizeCheck" />
 
-        <Button
-            android:id="@+id/registerBtn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:layout_marginLeft="@dimen/_15sdp"
-            android:layout_marginRight="@dimen/_15sdp"
-            android:background="@drawable/button"
-            android:text="@string/reg"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp"
-            android:textStyle="bold"
-            tools:ignore="TextSizeCheck" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <Button
+                android:id="@+id/registerBtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:background="@drawable/button"
+                android:text="@string/reg"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp"
+                android:textStyle="bold"
+                tools:ignore="TextSizeCheck" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="center"
+                android:visibility="invisible"/>
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/loginTxt"
