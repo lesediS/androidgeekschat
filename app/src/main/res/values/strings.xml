@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Chat App</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="login_cont">Login To Continue</string>
+    <string name="welcome_reg">Welcome!</string>
+    <string name="reg_cont">Let\'s Start</string>
+    <string name="login">Login</string>
+    <string name="reg">Register</string>
+    <string name="forgotPass">Forgot Password?</string>
+    <string name="firstName">First Name</string>
+    <string name="surname">Surname</string>
+    <string name="email">Email Address</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+</resources>
