@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
@@ -125,8 +126,8 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         } else if(binding.regFirstName.getText().toString().trim().isEmpty() || binding.regSurname.getText().toString().trim().isEmpty()
                    || binding.regEmail.getText().toString().trim().isEmpty() || binding.regUsername.getText().toString().trim().isEmpty()
-                   || binding.regPassword.getText().toString().trim().isEmpty()){
-            showToast("Enter all fields");
+                   || binding.regPassword.getText().toString().trim().isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(binding.regEmail.getText().toString()).matches()){
+            showToast("Enter valid details in all fields");
             return false;
         } else {
             return true;
