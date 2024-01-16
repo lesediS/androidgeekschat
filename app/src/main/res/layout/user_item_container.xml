@@ -7,8 +7,8 @@
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/imgProfile"
-        android:layout_width="@dimen/_35sdp"
-        android:layout_height="@dimen/_35sdp"
+        android:layout_width="@dimen/_36sdp"
+        android:layout_height="@dimen/_36sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="@id/imgProfile"/>
 
     <TextView
-        android:id="@+id/nameTxt"
+        android:id="@+id/usernameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/view"
@@ -38,17 +38,17 @@
         android:textSize="@dimen/_15ssp"/>
 
     <TextView
-        android:id="@+id/emailTxt"
+        android:id="@+id/fNameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgProfile"
-        app:layout_constraintBottom_toBottomOf="@id/view"
+        app:layout_constraintTop_toBottomOf="@id/usernameTxt"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/secondary_text"
-        android:textSize="@dimen/_10ssp"/>
+        android:textSize="@dimen/_13ssp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

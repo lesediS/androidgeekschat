@@ -26,6 +26,17 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
     }
 
+    private void setListeners(){
+        binding.createAccountReg.setOnClickListener(v -> startActivity(
+                new Intent(getApplicationContext(), RegisterActivity.class)));
+
+        binding.loginBtn.setOnClickListener(v -> {
+            if(isValidLoginDetails()){
+                login();
+            }
+        });
+    }
+
     private void loading(Boolean isLoading){
         if (isLoading){
             binding.loginBtn.setVisibility(View.INVISIBLE);
@@ -48,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         preferenceManager.putBoolean(Constants.IS_LOGGED_IN, true);
                         preferenceManager.putString(Constants.USER_ID, snapshot.getId());
-                        preferenceManager.putString(Constants.NAME, snapshot.getString(Constants.NAME));
+                        preferenceManager.putString(Constants.USERNAME, snapshot.getString(Constants.USERNAME));
                         preferenceManager.putString(Constants.IMAGE, snapshot.getString(Constants.IMAGE));
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -61,16 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void setListeners(){
-        binding.createAccountReg.setOnClickListener(v -> startActivity(
-                new Intent(getApplicationContext(), RegisterActivity.class)));
 
-        binding.loginBtn.setOnClickListener(v -> {
-            if(isValidLoginDetails()){
-                login();
-            }
-        });
-    }
 
 
     private void showToast(String msg){
