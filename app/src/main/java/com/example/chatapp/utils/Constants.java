@@ -11,4 +11,5 @@ public class Constants {
     public static final String USER_ID = "userId";
     public static final String IMAGE = "profileImage";
     public static final String IS_LOGGED_IN ="isLoggedIn";
+    public static final String FCM_TOKEN = "fcmToken";
 }

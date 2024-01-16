@@ -1,21 +1,17 @@
 package com.example.chatapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.chatapp.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.chatapp.databinding.ActivityLoginBinding;
 import com.example.chatapp.utils.Constants;
 import com.example.chatapp.utils.PreferenceManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,8 +22,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(getApplicationContext());
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
         setListeners();
+        setContentView(binding.getRoot());
     }
 
     private void loading(Boolean isLoading){

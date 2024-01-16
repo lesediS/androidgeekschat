@@ -26,7 +26,6 @@
         android:layout_height="@dimen/_32sdp"
         android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_30sdp"
-        android:layout_marginRight="@dimen/_16sdp"
         android:background="@drawable/background_icon"
         android:padding="@dimen/_5sdp"
         android:src="@drawable/ic_logout"
