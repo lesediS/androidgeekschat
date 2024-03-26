@@ -9,7 +9,7 @@
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
     tools:context=".activities.RegisterActivity"
-    android:background="@color/background">
+    android:background="@drawable/loginreg">
 
     <LinearLayout
         android:layout_width="match_parent"

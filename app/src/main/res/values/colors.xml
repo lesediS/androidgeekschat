@@ -13,5 +13,6 @@
     <color name="received_msg_back">#290001</color>
     <color name="background">#eee0ca</color>
     <color name="secondary_color">#ddbea5</color>
+    <color name="txtMsgHint">#D6D6D6</color>
     <color name="buttons">#b48762</color>
 </resources>

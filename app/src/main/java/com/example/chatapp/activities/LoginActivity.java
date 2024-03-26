@@ -17,6 +17,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
     private PreferenceManager preferenceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,19 +27,19 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
     }
 
-    private void setListeners(){
+    private void setListeners() {
         binding.createAccountReg.setOnClickListener(v -> startActivity(
                 new Intent(getApplicationContext(), RegisterActivity.class)));
 
         binding.loginBtn.setOnClickListener(v -> {
-            if(isValidLoginDetails()){
+            if (isValidLoginDetails()) {
                 login();
             }
         });
     }
 
-    private void loading(Boolean isLoading){
-        if (isLoading){
+    private void loading(Boolean isLoading) {
+        if (isLoading) {
             binding.loginBtn.setVisibility(View.INVISIBLE);
             binding.progressBar.setVisibility(View.VISIBLE);
         } else {
@@ -47,14 +48,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void login(){
+    private void login() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        database.collection(Constants.COLLECTION_NAME)
+        database.collection(Constants.COLLECTION_USERS)
                 .whereEqualTo(Constants.USERNAME, binding.loginUsername.getText().toString())
                 .whereEqualTo(Constants.PASSWORD, binding.loginPassword.getText().toString())
                 .get().addOnCompleteListener(task -> {
-                    if(task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0){
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
                         DocumentSnapshot snapshot = task.getResult().getDocuments().get(0);
 
                         preferenceManager.putBoolean(Constants.IS_LOGGED_IN, true);
@@ -67,23 +68,21 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                     } else {
                         loading(false);
-                        showToast("Could not login. Try again");
+                        showToast("Oops, try again");
                     }
                 });
     }
 
 
-
-
-    private void showToast(String msg){
+    private void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    private Boolean isValidLoginDetails(){
-        if(binding.loginUsername.getText().toString().trim().isEmpty()){
+    private Boolean isValidLoginDetails() {
+        if (binding.loginUsername.getText().toString().trim().isEmpty()) {
             showToast("Enter valid details");
             return false;
-        } else if(binding.loginPassword.getText().toString().trim().isEmpty()){
+        } else if (binding.loginPassword.getText().toString().trim().isEmpty()) {
             showToast("Enter valid details");
             return false;
         } else {
