@@ -25,7 +25,6 @@
             android:src="@drawable/ic_send"
             android:tint="@color/white"
             android:padding="@dimen/_8sdp"
-            android:layout_marginLeft="@dimen/_4sdp"
             android:layout_marginStart="@dimen/_4sdp"/>
     </FrameLayout>
 
@@ -118,12 +117,25 @@
         android:background="@color/primary"
         app:layout_constraintTop_toBottomOf="@id/backBtnImg"/>
 
+    <TextView
+        android:id="@+id/textAvail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/viewSupporter"
+        android:background="#008000"
+        android:textSize="@dimen/_10ssp"
+        android:textColor="@color/white"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/online"
+        android:visibility="gone"
+        android:gravity="center"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/chatBackgroundView"
-        app:layout_constraintTop_toBottomOf="@id/viewSupporter"
+        app:layout_constraintTop_toBottomOf="@id/textAvail"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:orientation="vertical"

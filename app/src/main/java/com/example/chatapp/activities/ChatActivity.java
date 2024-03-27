@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 
-
 import com.example.chatapp.adapters.ChatAdapter;
 import com.example.chatapp.databinding.ActivityChatBinding;
 import com.example.chatapp.models.ChatMessage;
@@ -29,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ChatActivity extends BaseActivity {
 
@@ -39,7 +39,7 @@ public class ChatActivity extends BaseActivity {
     private PreferenceManager preferenceManager;
     private FirebaseFirestore database;
     private String chatId = null;
-
+    private Boolean isReceiverAvailable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,6 @@ public class ChatActivity extends BaseActivity {
         listenMsgs();
     }
 
-
     private void init() {
         preferenceManager = new PreferenceManager(getApplicationContext());
         chatMessageList = new ArrayList<>();
@@ -62,7 +61,6 @@ public class ChatActivity extends BaseActivity {
         binding.chatRecycler.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
     }
-
 
     private void sendMsg() {
         HashMap<String, Object> message = new HashMap<>();
@@ -104,6 +102,29 @@ public class ChatActivity extends BaseActivity {
                 .addSnapshotListener(eventListener);
     }
 
+    private void listenAvailabilityOfReciver() {
+        database.collection(Constants.COLLECTION_USERS).document(
+                receiverUser.id
+        ).addSnapshotListener(ChatActivity.this, (value, error) -> {
+            if(error != null){
+                return;
+            }
+            if(value != null){
+                if(value.getLong(Constants.AVAILABLITY) != null){
+                    int available = Objects.requireNonNull(
+                            value.getLong(Constants.AVAILABLITY)
+                    ).intValue();
+                    isReceiverAvailable = available == 1;
+                }
+            }
+
+            if(isReceiverAvailable){
+                binding.textAvail.setVisibility(View.VISIBLE);
+            } else {
+                binding.textAvail.setVisibility(View.GONE);
+            }
+        });
+    }
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
@@ -140,7 +161,6 @@ public class ChatActivity extends BaseActivity {
         }
     };
 
-
     private Bitmap getBitmapEncodedString(String encodedImage) {
         byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -161,11 +181,9 @@ public class ChatActivity extends BaseActivity {
         binding.sendFrameLayout.setOnClickListener(v -> sendMsg());
     }
 
-
     private String getReadableTimeStamp(Date date) {
         return new SimpleDateFormat("dd MMM yyyy - hh:mm a", Locale.getDefault()).format(date);
     }
-
 
     private void addConvert(HashMap<String, Object> convert) {
         database.collection(Constants.COLLECTION_CONVERSATIONS)
@@ -181,7 +199,6 @@ public class ChatActivity extends BaseActivity {
         );
     }
 
-
     private void checkForConvert() {
         if (chatMessageList.size() != 0) {
             checkConversionRemote(
@@ -195,7 +212,6 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
-
     private void checkConversionRemote(String senderId, String receiverId) {
         database.collection(Constants.COLLECTION_CONVERSATIONS)
                 .whereEqualTo(Constants.SENDER_ID, senderId)
@@ -204,7 +220,6 @@ public class ChatActivity extends BaseActivity {
                 .addOnCompleteListener(convertOnCompleteListener);
     }
 
-
     private final OnCompleteListener<QuerySnapshot> convertOnCompleteListener = task -> {
         if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
             DocumentSnapshot docSnapshot = task.getResult().getDocuments().get(0);
@@ -212,6 +227,11 @@ public class ChatActivity extends BaseActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listenAvailabilityOfReciver();
+    }
 }
 
 
