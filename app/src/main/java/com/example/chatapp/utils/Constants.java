@@ -26,4 +26,5 @@ public class Constants {
     public static final String RECEIVER_IMG = "receiverImg";
     public static final String LAST_MSG = "lastMsg";
 
+    public static final String AVAILABLITY = "available";
 }

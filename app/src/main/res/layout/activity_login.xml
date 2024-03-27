@@ -108,6 +108,6 @@
             android:textSize="@dimen/_12ssp"
             android:layout_marginTop="@dimen/_30sdp"
             android:textStyle="bold"
-            android:textColor="@color/primary"/>
+            android:textColor="@color/white"/>
     </LinearLayout>
 </ScrollView>

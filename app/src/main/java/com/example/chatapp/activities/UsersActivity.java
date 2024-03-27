@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chatapp.adapters.UserAdapter;
 import com.example.chatapp.databinding.ActivityUsersBinding;
@@ -18,7 +17,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity implements UserListener {
+public class UsersActivity extends BaseActivity implements UserListener {
 
     private ActivityUsersBinding binding;
     private PreferenceManager preferenceManager;
@@ -33,10 +32,11 @@ public class UsersActivity extends AppCompatActivity implements UserListener {
         fetchUsers();
     }
 
-    //TODO: Use GPT to figure out how to use the suggested methods for onBackPressed successfully
+    //TODO: Use GPT to figure out how to use the suggested methods for onBackPressed successfully (UPDATE UPDATE used getOnBackPressedDispatcher)
     private void setListeners(){
         binding.backBtnImg.setOnClickListener(v -> {
-            onBackPressed();
+            //onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         });
     }
 
