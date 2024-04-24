@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -52,28 +52,12 @@
         </FrameLayout>
 
         <EditText
-            android:id="@+id/regFirstName"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_38sdp"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:background="@drawable/background_input"
-            android:hint="@string/firstName"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/_11sdp"
-            tools:ignore="TextSizeCheck" />
-
-        <EditText
-            android:id="@+id/regSurname"
+            android:id="@+id/regUsername"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_38sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:background="@drawable/background_input"
-            android:hint="@string/surname"
+            android:hint="@string/username"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
@@ -93,22 +77,6 @@
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="textEmailAddress"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/_11sdp"
-            tools:ignore="TextSizeCheck" />
-
-        <EditText
-            android:id="@+id/regUsername"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_38sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:background="@drawable/background_input"
-            android:hint="@string/username"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="text"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@color/secondary_text"

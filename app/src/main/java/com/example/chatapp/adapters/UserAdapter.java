@@ -57,7 +57,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         //TODO: Might need to fix fetchUsers() in UsersActivity to only include the below details and not everything
         void setUserInfo(User user) {
             binding.usernameTxt.setText(user.uName);
-            binding.fNameTxt.setText(user.fName);
             binding.imgProfile.setImageBitmap(userImg(user.img));
             binding.getRoot().setOnClickListener(v -> userListener.onUserClicked(user));
         }

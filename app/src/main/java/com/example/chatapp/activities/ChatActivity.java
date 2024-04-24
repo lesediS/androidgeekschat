@@ -76,11 +76,11 @@ public class ChatActivity extends BaseActivity {
             HashMap<String, Object> convert = new HashMap<>();
 
             convert.put(Constants.SENDER_ID, preferenceManager.getString(Constants.USER_ID));
-            convert.put(Constants.SENDER_NAME, preferenceManager.getString(Constants.NAME)); //Constants.USERNAME
+            convert.put(Constants.SENDER_NAME, preferenceManager.getString(Constants.USERNAME)); //Constants.USERNAME
             convert.put(Constants.SENDER_IMG, preferenceManager.getString(Constants.IMAGE));
 
             convert.put(Constants.RECEIVER_ID, receiverUser);
-            convert.put(Constants.RECEIVER_NAME, receiverUser.fName); //receiverUser.uName
+            convert.put(Constants.RECEIVER_NAME, receiverUser.uName); //receiverUser.uName
             convert.put(Constants.RECEIVER_IMG, receiverUser.img);
 
             convert.put(Constants.LAST_MSG, binding.msgInputTxt.getText().toString());
@@ -110,9 +110,9 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
             if(value != null){
-                if(value.getLong(Constants.AVAILABLITY) != null){
+                if(value.getLong(Constants.AVAILABILITY) != null){
                     int available = Objects.requireNonNull(
-                            value.getLong(Constants.AVAILABLITY)
+                            value.getLong(Constants.AVAILABILITY)
                     ).intValue();
                     isReceiverAvailable = available == 1;
                 }

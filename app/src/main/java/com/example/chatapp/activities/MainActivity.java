@@ -44,6 +44,7 @@ public class MainActivity extends BaseActivity implements ChatListener {
         //setContentView(R.layout.activity_login);
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
+        database = FirebaseFirestore.getInstance();
         setListeners();
         listenChats();
         loadDetails();
