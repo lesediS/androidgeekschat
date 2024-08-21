@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatapp.databinding.UserItemContainerBinding;
+import com.example.chatapp.listeners.UserListener;
 import com.example.chatapp.models.User;
 
 import java.util.List;
@@ -19,9 +20,11 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
     private final List<User> users;
+    private final UserListener userListener;
 
-    public UserAdapter(List<User> users) {
+    public UserAdapter(List<User> users, UserListener userListener) {
         this.users = users;
+        this.userListener = userListener;
     }
 
     @NonNull
@@ -43,22 +46,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return users.size();
     }
 
-    class UserViewHolder extends RecyclerView.ViewHolder{
+    class UserViewHolder extends RecyclerView.ViewHolder {
         UserItemContainerBinding binding;
+
         UserViewHolder(UserItemContainerBinding containerBinding) {
             super(containerBinding.getRoot());
             binding = containerBinding;
         }
 
         //TODO: Might need to fix fetchUsers() in UsersActivity to only include the below details and not everything
-        void setUserInfo(User user){
+        void setUserInfo(User user) {
             binding.usernameTxt.setText(user.uName);
-            binding.fNameTxt.setText(user.fName);
             binding.imgProfile.setImageBitmap(userImg(user.img));
+            binding.getRoot().setOnClickListener(v -> userListener.onUserClicked(user));
         }
     }
 
-    private Bitmap userImg(String encodedImg){
+    private Bitmap userImg(String encodedImg) {
         byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }

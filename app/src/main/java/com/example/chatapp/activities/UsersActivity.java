@@ -1,12 +1,13 @@
 package com.example.chatapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chatapp.adapters.UserAdapter;
 import com.example.chatapp.databinding.ActivityUsersBinding;
+import com.example.chatapp.listeners.UserListener;
 import com.example.chatapp.models.User;
 import com.example.chatapp.utils.Constants;
 import com.example.chatapp.utils.PreferenceManager;
@@ -16,7 +17,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersActivity extends AppCompatActivity {
+public class UsersActivity extends BaseActivity implements UserListener {
 
     private ActivityUsersBinding binding;
     private PreferenceManager preferenceManager;
@@ -31,10 +32,11 @@ public class UsersActivity extends AppCompatActivity {
         fetchUsers();
     }
 
-    //TODO: Use GPT to figure out how to use the suggested methods for onBackPressed successfully
+    //TODO: Use GPT to figure out how to use the suggested methods for onBackPressed successfully (UPDATE UPDATE used getOnBackPressedDispatcher)
     private void setListeners(){
         binding.backBtnImg.setOnClickListener(v -> {
-            onBackPressed();
+            //onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
         });
     }
 
@@ -42,7 +44,7 @@ public class UsersActivity extends AppCompatActivity {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
 
-        database.collection(Constants.COLLECTION_NAME).get().addOnCompleteListener(task -> {
+        database.collection(Constants.COLLECTION_USERS).get().addOnCompleteListener(task -> {
             loading(false);
             String curUserID = preferenceManager.getString(Constants.USER_ID);
             if(task.isSuccessful() && task.getResult() != null){
@@ -53,17 +55,16 @@ public class UsersActivity extends AppCompatActivity {
                     }
                     User user = new User();
 
-                    user.fName = snapshot.getString(Constants.NAME);
-                    user.sName = snapshot.getString(Constants.SURNAME);
                     user.uName = snapshot.getString(Constants.USERNAME);
                     user.email = snapshot.getString(Constants.EMAIL);
                     user.img = snapshot.getString(Constants.IMAGE);
                     user.token = snapshot.getString(Constants.FCM_TOKEN);
+                    user.id = snapshot.getId();
 
                     users.add(user);
                 }
                 if(users.size() > 0){
-                    UserAdapter adapter = new UserAdapter(users);
+                    UserAdapter adapter = new UserAdapter(users, this);
                     binding.usersRecycler.setAdapter(adapter);
                     binding.usersRecycler.setVisibility(View.VISIBLE);
                 } else {
@@ -86,5 +87,13 @@ public class UsersActivity extends AppCompatActivity {
         } else {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void onUserClicked(User user) {
+        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+        intent.putExtra(Constants.USER, user);
+        startActivity(intent);
+        finish();
     }
 }

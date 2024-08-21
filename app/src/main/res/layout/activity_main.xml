@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/background"
+    android:background="@drawable/home"
     tools:context=".activities.MainActivity">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/profilePic"
-        android:layout_width="@dimen/_32sdp"
-        android:layout_height="@dimen/_32sdp"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="36dp"
         android:background="@drawable/background_icon"
@@ -22,11 +22,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/logoutImg"
-        android:layout_width="@dimen/_32sdp"
-        android:layout_height="@dimen/_32sdp"
+        android:layout_width="@dimen/_38sdp"
+        android:layout_height="@dimen/_38sdp"
         android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_30sdp"
-        android:layout_marginRight="@dimen/_16sdp"
         android:background="@drawable/background_icon"
         android:padding="@dimen/_5sdp"
         android:src="@drawable/ic_logout"
@@ -40,16 +39,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
-        app:layout_goneMarginStart="@dimen/_8sdp"
-        app:layout_goneMarginEnd="@dimen/_8sdp"
-        app:layout_constraintBottom_toBottomOf="@id/profilePic"
-        app:layout_constraintEnd_toStartOf="@id/logoutImg"
-        app:layout_constraintStart_toEndOf="@id/profilePic"
-        app:layout_constraintTop_toTopOf="@id/profilePic"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="@dimen/_17ssp"
+        app:layout_constraintBottom_toBottomOf="@id/profilePic"
+        app:layout_constraintEnd_toStartOf="@id/logoutImg"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/profilePic"
+        app:layout_constraintTop_toTopOf="@id/profilePic"
+        app:layout_constraintVertical_bias="0.394"
+        app:layout_goneMarginEnd="@dimen/_8sdp"
+        app:layout_goneMarginStart="@dimen/_8sdp" />
 
     <FrameLayout
         android:id="@+id/mainFrameLayout"
@@ -59,6 +61,23 @@
         app:layout_constraintTop_toBottomOf="@id/profilePic"
         android:background="@drawable/back_bottom_content"
         android:layout_marginTop="@dimen/_15sdp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recentChatsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:overScrollMode="never"
+            android:padding="@dimen/_20sdp"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="center"/>
     </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
