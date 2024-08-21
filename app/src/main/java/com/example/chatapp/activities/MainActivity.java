@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.example.chatapp.utils.Constants;
 import com.example.chatapp.utils.PreferenceManager;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends BaseActivity implements ChatListener {
 
@@ -105,36 +108,55 @@ public class MainActivity extends BaseActivity implements ChatListener {
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
+            // Log the error only if it's not null
+            if (error.getMessage() != null) {
+                Log.e("Event listener error", error.getMessage());
+            } else {
+                Log.e("Event listener error", "Unknown error occurred.");
+            }
             return;
         }
 
         if (value != null) {
             for (DocumentChange documentChange : value.getDocumentChanges()) {
+                DocumentSnapshot document = documentChange.getDocument();
+
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                    String senderID = documentChange.getDocument().getString(Constants.SENDER_ID);
-                    String receiverID = documentChange.getDocument().getString(Constants.RECEIVER_ID);
-                    ChatMessage chatMessage = new ChatMessage();
-                    chatMessage.senderId = senderID;
-                    chatMessage.receiverId = receiverID;
-                    if (preferenceManager.getString(Constants.USER_ID).equals(senderID)) {
-                        chatMessage.chatImg = documentChange.getDocument().getString(Constants.RECEIVER_IMG);
-                        chatMessage.chatName = documentChange.getDocument().getString(Constants.RECEIVER_NAME);
-                        chatMessage.chatId = documentChange.getDocument().getString(Constants.RECEIVER_ID);
-                    } else {
-                        chatMessage.chatImg = documentChange.getDocument().getString(Constants.SENDER_NAME);
-                        chatMessage.chatName = documentChange.getDocument().getString(Constants.SENDER_NAME);
-                        chatMessage.chatId = documentChange.getDocument().getString(Constants.SENDER_ID);
+                    String senderID = document.contains(Constants.SENDER_ID) ? document.getString(Constants.SENDER_ID) : null;
+                    Map<String, Object> receiverMap = document.contains(Constants.RECEIVER_ID) ? (Map<String, Object>) document.get(Constants.RECEIVER_ID) : null;
+                    String receiverID = receiverMap != null ? (String) receiverMap.get("id") : null;
+
+                    if (senderID != null && receiverID != null) {
+                        ChatMessage chatMessage = new ChatMessage();
+                        chatMessage.senderId = senderID;
+                        chatMessage.receiverId = receiverID;
+
+                        if (preferenceManager.getString(Constants.USER_ID).equals(senderID)) {
+                            chatMessage.chatImg = (String) receiverMap.get("image"); // Assuming image is a key in the map
+                            chatMessage.chatName = (String) receiverMap.get("name"); // Assuming name is a key in the map
+                            chatMessage.chatId = receiverID;
+                        } else {
+                            chatMessage.chatImg = document.getString(Constants.SENDER_IMG);
+                            chatMessage.chatName = document.getString(Constants.SENDER_NAME);
+                            chatMessage.chatId = senderID;
+                        }
+
+                        chatMessage.message = document.getString(Constants.LAST_MSG);
+                        chatMessage.dateObj = document.getDate(Constants.TIME_STAMP);
+                        chats.add(chatMessage);
                     }
-                    chatMessage.message = documentChange.getDocument().getString(Constants.LAST_MSG);
-                    chatMessage.dateObj = documentChange.getDocument().getDate(Constants.TIME_STAMP);
-                    chats.add(chatMessage);
                 } else if (documentChange.getType() == DocumentChange.Type.MODIFIED) {
                     for (int i = 0; i < chats.size(); i++) {
-                        String senderId = documentChange.getDocument().getString(Constants.SENDER_ID);
-                        String receiverId = documentChange.getDocument().getString(Constants.RECEIVER_ID);
-                        if (chats.get(i).senderId.equals(senderId) && chats.get(i).receiverId.equals(receiverId)) {
-                            chats.get(i).message = documentChange.getDocument().getString(Constants.LAST_MSG);
-                            chats.get(i).dateObj = documentChange.getDocument().getDate(Constants.TIME_STAMP);
+                        String senderId = document.contains(Constants.SENDER_ID) ? document.getString(Constants.SENDER_ID) : null;
+                        Map<String, Object> receiverMap = document.contains(Constants.RECEIVER_ID) ? (Map<String, Object>) document.get(Constants.RECEIVER_ID) : null;
+                        String receiverId = receiverMap != null ? (String) receiverMap.get("id") : null;
+
+                        if (senderId != null && receiverId != null &&
+                                chats.get(i).senderId.equals(senderId) &&
+                                chats.get(i).receiverId.equals(receiverId)) {
+
+                            chats.get(i).message = document.getString(Constants.LAST_MSG);
+                            chats.get(i).dateObj = document.getDate(Constants.TIME_STAMP);
                             break;
                         }
                     }
@@ -147,7 +169,9 @@ public class MainActivity extends BaseActivity implements ChatListener {
             binding.recentChatsRecycler.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
         }
+
     };
+
 
     private void tokenUpdate(String token) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
