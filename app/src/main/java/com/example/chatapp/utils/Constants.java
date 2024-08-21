@@ -17,6 +17,7 @@ public class Constants {
     public static final String RECEIVER_ID = "receiverId";
     public static final String MESSAGE = "message";
     public static final String TIME_STAMP = "timestamp";
+
     public static final String COLLECTION_CONVERSATIONS = "conversations";
     public static final String SENDER_NAME = "senderName";
     public static final String RECEIVER_NAME = "receiverName";

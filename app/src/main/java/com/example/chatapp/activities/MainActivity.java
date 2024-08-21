@@ -48,11 +48,11 @@ public class MainActivity extends BaseActivity implements ChatListener {
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
         database = FirebaseFirestore.getInstance();
+        init();
         setListeners();
         listenChats();
         loadDetails();
         getToken();
-        init();
     }
 
     private void init() {
@@ -102,15 +102,17 @@ public class MainActivity extends BaseActivity implements ChatListener {
                 .whereEqualTo(Constants.SENDER_ID, preferenceManager.getString(Constants.USER_ID))
                 .addSnapshotListener(eventListener);
         database.collection(Constants.COLLECTION_CONVERSATIONS)
-                .whereEqualTo(Constants.RECEIVER_ID, preferenceManager.getString(Constants.USER_ID))
+                .whereEqualTo("receiverId.id", preferenceManager.getString(Constants.USER_ID)) // Access nested map field
                 .addSnapshotListener(eventListener);
     }
+
 
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
             // Log the error only if it's not null
             if (error.getMessage() != null) {
-                Log.e("Event listener error", error.getMessage());
+                Log.e("Firestore Error", error.getMessage());
+                return;
             } else {
                 Log.e("Event listener error", "Unknown error occurred.");
             }
@@ -119,6 +121,7 @@ public class MainActivity extends BaseActivity implements ChatListener {
 
         if (value != null) {
             for (DocumentChange documentChange : value.getDocumentChanges()) {
+                Log.d("DocumentChange", documentChange.getDocument().getData().toString());
                 DocumentSnapshot document = documentChange.getDocument();
 
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {

@@ -38,6 +38,7 @@ public class ChatActivity extends BaseActivity {
     private ChatAdapter chatAdapter;
     private PreferenceManager preferenceManager;
     private FirebaseFirestore database;
+
     private String chatId = null;
     private Boolean isReceiverAvailable = false;
 
@@ -102,7 +103,7 @@ public class ChatActivity extends BaseActivity {
                 .addSnapshotListener(eventListener);
     }
 
-    private void listenAvailabilityOfReciver() {
+    private void listenAvailabilityOfReceiver() {
         database.collection(Constants.COLLECTION_USERS).document(
                 receiverUser.id
         ).addSnapshotListener(ChatActivity.this, (value, error) -> {
@@ -168,6 +169,7 @@ public class ChatActivity extends BaseActivity {
 
     private void loadReceiverDetails() {
         receiverUser = (User) getIntent().getSerializableExtra(Constants.USER);
+        assert receiverUser != null;
         binding.chatNameTxt.setText(receiverUser.uName);
     }
 
@@ -200,7 +202,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void checkForConvert() {
-        if (chatMessageList.size() != 0) {
+        if (!chatMessageList.isEmpty()) {
             checkConversionRemote(
                     preferenceManager.getString(Constants.USER_ID),
                     receiverUser.id
@@ -230,43 +232,6 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        listenAvailabilityOfReciver();
+        listenAvailabilityOfReceiver();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

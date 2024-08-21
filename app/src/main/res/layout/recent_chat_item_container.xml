@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="@id/imgProfile"/>
 
     <TextView
-        android:id="@+id/recentChatTxt"
+        android:id="@+id/fNameTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/view"
@@ -38,7 +38,7 @@
         android:textSize="@dimen/_12ssp"/>
 
     <TextView
-        android:id="@+id/fNameTxt"
+        android:id="@+id/recentChatTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
