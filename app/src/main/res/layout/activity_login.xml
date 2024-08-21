@@ -9,14 +9,15 @@
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
     tools:context=".activities.LoginActivity"
-    android:background="@color/background">
+    android:background="@drawable/loginreg">
 
     <LinearLayout
         android:id="@+id/loginTxtLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_35sdp">
 
         <TextView
             android:id="@+id/welcomeLbl"
@@ -24,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_40sdp"
             android:text="@string/welcome_back"
-            android:textColor="#404040"
+            android:textColor="@color/white"
             android:textSize="@dimen/_30sdp"
             android:textStyle="bold" />
 
@@ -34,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/login_cont"
-            android:textColor="@color/secondary_text"
+            android:textColor="@color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="bold" />
 
@@ -108,6 +109,6 @@
             android:textSize="@dimen/_12ssp"
             android:layout_marginTop="@dimen/_30sdp"
             android:textStyle="bold"
-            android:textColor="@color/primary"/>
+            android:textColor="@color/white"/>
     </LinearLayout>
 </ScrollView>

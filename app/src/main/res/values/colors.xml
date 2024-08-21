@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#C87941</color>
-    <color name="dark_primary">#87431D</color>
+    <color name="primary">#b5838d</color>
+    <color name="dark_primary">#6d6875</color>
     <color name="primary_text">#040D12</color>
     <color name="secondary_text">#595959</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="icon_back">#5C5470</color>
-    <color name="input_back">#ddbea5</color>
+    <color name="input_back">#FFFFFF</color>
     <color name="input_back_pic">#f8f2e9</color>
     <color name="error">#D21312</color>
-    <color name="received_msg_back">#290001</color>
+    <color name="received_msg_back">#FFB4A2</color>
+    <color name="sent_msg_back">#FFCBD2</color>
     <color name="background">#eee0ca</color>
     <color name="secondary_color">#ddbea5</color>
-    <color name="buttons">#b48762</color>
+    <color name="txtMsgHint">#D6D6D6</color>
+    <color name="buttons">#E5989B</color>
 </resources>

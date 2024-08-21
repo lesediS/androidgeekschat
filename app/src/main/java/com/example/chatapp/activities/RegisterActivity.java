@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -30,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private ActivityRegisterBinding binding;
     private String encodedImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
 
-        if(preferenceManager.getBoolean(Constants.IS_LOGGED_IN)){
+        if (preferenceManager.getBoolean(Constants.IS_LOGGED_IN)) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }
@@ -48,8 +50,9 @@ public class RegisterActivity extends AppCompatActivity {
         //TODO: onBackPressed() is deprecated, onBackPressedDispatcher() does not work, getOnBackInvokedDispatcher(), Call requires API level 33 (current min is 19): android.app.Activity#getOnBackInvokedDispatcher More... (Ctrl+F1)
         binding.loginTxt.setOnClickListener(v -> onBackPressed());
 
+
         binding.registerBtn.setOnClickListener(v -> {
-            if(isValidRegDetails()){
+            if (isValidRegDetails()) {
                 register();
             }
         });
@@ -61,26 +64,24 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void showToast(String msg){
+    private void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    private void register(){
+    private void register() {
         loading(true);
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
 
-        user.put(Constants.NAME, binding.regFirstName.getText().toString());
-        user.put(Constants.SURNAME, binding.regSurname.getText().toString());
         user.put(Constants.EMAIL, binding.regEmail.getText().toString());
         user.put(Constants.USERNAME, binding.regUsername.getText().toString());
         user.put(Constants.PASSWORD, binding.regPassword.getText().toString());
         user.put(Constants.IMAGE, encodedImg);
-        database.collection(Constants.COLLECTION_NAME).add(user).addOnSuccessListener(documentReference -> {
+        database.collection(Constants.COLLECTION_USERS).add(user).addOnSuccessListener(documentReference -> {
             loading(false);
             preferenceManager.putBoolean(Constants.IS_LOGGED_IN, true);
             preferenceManager.putString(Constants.USER_ID, documentReference.getId());
-            preferenceManager.putString(Constants.NAME, binding.regFirstName.getText().toString());
+            preferenceManager.putString(Constants.USERNAME, binding.regUsername.getText().toString());
             preferenceManager.putString(Constants.IMAGE, encodedImg);
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -92,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private String encImage(Bitmap bitmap){
+    private String encImage(Bitmap bitmap) {
         int width = 150;
         int height = bitmap.getHeight() * width / bitmap.getWidth();
 
@@ -108,16 +109,17 @@ public class RegisterActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Intent> chooseImg = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
-                if(result.getResultCode() == RESULT_OK){
-                    if(result.getData() != null){
+                if (result.getResultCode() == RESULT_OK) {
+                    if (result.getData() != null) {
                         Uri imgUri = result.getData().getData();
-                        try{
+                        try {
+                            assert imgUri != null;
                             InputStream stream = getContentResolver().openInputStream(imgUri);
                             Bitmap map = BitmapFactory.decodeStream(stream);
                             binding.regProfilePic.setImageBitmap(map);
                             binding.addImgTxt.setVisibility(View.GONE);
                             encodedImg = encImage(map);
-                        } catch (FileNotFoundException ex){
+                        } catch (FileNotFoundException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -125,13 +127,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
     );
 
-    private boolean isValidRegDetails(){
-        if(encodedImg == null){
+    private boolean isValidRegDetails() {
+        if (encodedImg == null) {
             showToast("Select profile picture");
             return false;
-        } else if(binding.regFirstName.getText().toString().trim().isEmpty() || binding.regSurname.getText().toString().trim().isEmpty()
-                   || binding.regEmail.getText().toString().trim().isEmpty() || binding.regUsername.getText().toString().trim().isEmpty()
-                   || binding.regPassword.getText().toString().trim().isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(binding.regEmail.getText().toString()).matches()){
+        } else if (binding.regUsername.getText().toString().trim().isEmpty() || binding.regEmail.getText().toString().trim().isEmpty()
+                || binding.regPassword.getText().toString().trim().isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(binding.regEmail.getText().toString()).matches()) {
             showToast("Enter valid details in all fields");
             return false;
         } else {
@@ -139,8 +140,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void loading(Boolean isLoading){
-        if (isLoading){
+    private void loading(Boolean isLoading) {
+        if (isLoading) {
             binding.registerBtn.setVisibility(View.INVISIBLE);
             binding.progressBar.setVisibility(View.VISIBLE);
         } else {

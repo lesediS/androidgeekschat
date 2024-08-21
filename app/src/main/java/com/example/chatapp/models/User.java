@@ -3,5 +3,10 @@ package com.example.chatapp.models;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    public String fName, sName, uName, email, img, token;
+
+    public String uName;
+    public String email;
+    public String img;
+    public String token;
+    public String id;
 }
