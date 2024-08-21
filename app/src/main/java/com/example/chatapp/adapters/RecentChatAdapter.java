@@ -1,9 +1,9 @@
 package com.example.chatapp.adapters;
 
 import android.graphics.Bitmap;
-
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -57,21 +57,30 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Ch
         }
 
         void setData(ChatMessage chatMessage) {
-            binding.imgProfile.setImageBitmap(getConvertImg(getConvertImg(chatMessage.chatImg).toString()));
-            binding.fNameTxt.setText(chatMessage.chatName);
-            binding.recentChatTxt.setText(chatMessage.message);
-            binding.getRoot().setOnClickListener(v -> {
-                User user = new User();
-                user.id = chatMessage.chatId;
-                user.uName = chatMessage.chatName;
-                user.img = chatMessage.chatImg;
-                chatListener.onChatClicked(user);
-            });
+            try {
+                binding.imgProfile.setImageBitmap(getConvertImg(getConvertImg(chatMessage.chatImg).toString()));
+                binding.fNameTxt.setText(chatMessage.chatName);
+                binding.recentChatTxt.setText(chatMessage.message);
+                binding.getRoot().setOnClickListener(v -> {
+                    User user = new User();
+                    user.id = chatMessage.chatId;
+                    user.uName = chatMessage.chatName;
+                    user.img = chatMessage.chatImg;
+                    chatListener.onChatClicked(user);
+                });
+            } catch (NullPointerException err) {
+                Log.e("RecentChatAdapter", err.getMessage());
+            }
         }
     }
 
     private Bitmap getConvertImg(String encodedImg) {
-        byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        if (encodedImg != null) { // Check if encodedImg is not null
+            byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        } else {
+            // Handle the case where encodedImg is null
+            return null; // Or return a placeholder Bitmap if you have one
+        }
     }
 }
