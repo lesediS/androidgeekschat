@@ -16,4 +16,8 @@
     <color name="secondary_color">#ddbea5</color>
     <color name="txtMsgHint">#D6D6D6</color>
     <color name="buttons">#E5989B</color>
+
+    <color name="lightText">#FDECEC</color>
+    <color name="lightTextGrey">#F0E4E4</color>
+    <color name="lightTextReceived">#F5F1F1</color>
 </resources>

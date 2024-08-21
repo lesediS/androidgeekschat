@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_35sdp"
             android:text="@string/welcome_reg"
-            android:textColor="#404040"
+            android:textColor="@color/lightText"
             android:textSize="@dimen/_30sdp"
             android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                 android:id="@+id/addImgTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Picture"
+                android:text="@string/add_img"
                 android:layout_gravity="center"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/_10ssp" />
@@ -92,7 +92,7 @@
                 android:id="@+id/registerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:layout_marginLeft="@dimen/_15sdp"
                 android:layout_marginRight="@dimen/_15sdp"
                 android:background="@drawable/button"
@@ -115,10 +115,11 @@
         <TextView
             android:id="@+id/loginTxt"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:gravity="center"
             android:text="@string/login"
-            android:textColor="@color/white"
+            android:textColor="@color/lightText"
             android:textSize="@dimen/_12ssp"
             android:textStyle="bold" />
 

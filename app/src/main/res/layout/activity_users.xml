@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/_10sdp"
         android:background="@drawable/ic_back"
+
         android:padding="@dimen/_5sdp"/>
 
     <TextView
@@ -24,14 +25,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_user"
+        android:textColor="@color/lightTextGrey"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/backBtnImg"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/backBtnImg"
-        android:textColor="@color/primary_text"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
-    
+        app:layout_constraintVertical_bias="1.0" />
+
     <FrameLayout
         android:id="@+id/usersFrame"
         android:layout_width="match_parent"
@@ -65,7 +68,7 @@
             android:visibility="gone"
             android:layout_marginStart="@dimen/_25sdp"
             android:layout_marginEnd="@dimen/_25sdp"
-            android:textColor="@color/error"
+            android:textColor="#F03B3A"
             android:textSize="@dimen/_13ssp"/>
 
     </FrameLayout>

@@ -3,6 +3,7 @@ package com.example.chatapp.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
@@ -145,7 +147,9 @@ public class ChatActivity extends BaseActivity {
                     chatMessageList.add(chatMessage);
                 }
             }
-            Collections.sort(chatMessageList, (obj1, obj2) -> obj1.dateObj.compareTo(obj2.dateObj));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Collections.sort(chatMessageList, Comparator.comparing(obj -> obj.dateObj));
+            }
             if (count == 0) {
                 chatAdapter.notifyDataSetChanged();
             } else {
@@ -176,7 +180,7 @@ public class ChatActivity extends BaseActivity {
     private void setListeners() {
         //binding.backBtnImg.setOnClickListener(v -> onBackPressed());
         binding.backBtnImg.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), UsersActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
         });
@@ -223,7 +227,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private final OnCompleteListener<QuerySnapshot> convertOnCompleteListener = task -> {
-        if (task.isSuccessful() && task.getResult() != null && task.getResult().getDocuments().size() > 0) {
+        if (task.isSuccessful() && task.getResult() != null && !task.getResult().getDocuments().isEmpty()) {
             DocumentSnapshot docSnapshot = task.getResult().getDocuments().get(0);
             chatId = docSnapshot.getId();
         }

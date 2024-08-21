@@ -62,7 +62,7 @@ public class UsersActivity extends BaseActivity implements UserListener {
 
                     users.add(user);
                 }
-                if(users.size() > 0){
+                if(!users.isEmpty()){
                     UserAdapter adapter = new UserAdapter(users, this);
                     binding.usersRecycler.setAdapter(adapter);
                     binding.usersRecycler.setVisibility(View.VISIBLE);
@@ -76,7 +76,7 @@ public class UsersActivity extends BaseActivity implements UserListener {
     }
 
     private void errorMsg(){
-        binding.errorTxt.setText(String.format("%s", "User/s not available"));
+        binding.errorTxt.setText(String.format("%s", "Ask your friends to join!"));
         binding.errorTxt.setVisibility(View.VISIBLE);
     }
 

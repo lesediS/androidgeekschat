@@ -27,7 +27,7 @@
         android:paddingEnd="@dimen/_12sdp"
         android:paddingBottom="@dimen/_8sdp"
         app:layout_constraintWidth_max="wrap"
-        android:textColor="@color/white"
+        android:textColor="@color/lightTextReceived"
         app:layout_constraintStart_toEndOf="@id/profileImg"
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="@dimen/_13ssp"
