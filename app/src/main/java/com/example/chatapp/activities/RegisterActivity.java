@@ -49,6 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
     private void setListeners() {
         //TODO: onBackPressed() is deprecated, onBackPressedDispatcher() does not work, getOnBackInvokedDispatcher(), Call requires API level 33 (current min is 19): android.app.Activity#getOnBackInvokedDispatcher More... (Ctrl+F1)
         binding.loginTxt.setOnClickListener(v -> onBackPressed());
+
+
         binding.registerBtn.setOnClickListener(v -> {
             if (isValidRegDetails()) {
                 register();
