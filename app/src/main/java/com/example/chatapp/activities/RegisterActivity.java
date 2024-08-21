@@ -49,8 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
     private void setListeners() {
         //TODO: onBackPressed() is deprecated, onBackPressedDispatcher() does not work, getOnBackInvokedDispatcher(), Call requires API level 33 (current min is 19): android.app.Activity#getOnBackInvokedDispatcher More... (Ctrl+F1)
         binding.loginTxt.setOnClickListener(v -> onBackPressed());
-
-
         binding.registerBtn.setOnClickListener(v -> {
             if (isValidRegDetails()) {
                 register();
@@ -73,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
 
-        user.put(Constants.EMAIL, binding.regEmail.getText().toString());
         user.put(Constants.USERNAME, binding.regUsername.getText().toString());
         user.put(Constants.PASSWORD, binding.regPassword.getText().toString());
         user.put(Constants.IMAGE, encodedImg);
@@ -131,8 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (encodedImg == null) {
             showToast("Select profile picture");
             return false;
-        } else if (binding.regUsername.getText().toString().trim().isEmpty() || binding.regEmail.getText().toString().trim().isEmpty()
-                || binding.regPassword.getText().toString().trim().isEmpty() && !Patterns.EMAIL_ADDRESS.matcher(binding.regEmail.getText().toString()).matches()) {
+        } else if (binding.regUsername.getText().toString().trim().isEmpty() || binding.regPassword.getText().toString().trim().isEmpty()) {
             showToast("Enter valid details in all fields");
             return false;
         } else {

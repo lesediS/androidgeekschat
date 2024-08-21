@@ -68,22 +68,6 @@
             tools:ignore="TextSizeCheck" />
 
         <EditText
-            android:id="@+id/regEmail"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_38sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:background="@drawable/background_input"
-            android:hint="@string/email"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/_11sdp"
-            tools:ignore="TextSizeCheck" />
-
-        <EditText
             android:id="@+id/regPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_38sdp"

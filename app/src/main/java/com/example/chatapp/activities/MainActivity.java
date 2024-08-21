@@ -121,26 +121,28 @@ public class MainActivity extends BaseActivity implements ChatListener {
 
         if (value != null) {
             for (DocumentChange documentChange : value.getDocumentChanges()) {
-                Log.d("DocumentChange", documentChange.getDocument().getData().toString());
                 DocumentSnapshot document = documentChange.getDocument();
 
                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                    String senderID = document.contains(Constants.SENDER_ID) ? document.getString(Constants.SENDER_ID) : null;
-                    Map<String, Object> receiverMap = document.contains(Constants.RECEIVER_ID) ? (Map<String, Object>) document.get(Constants.RECEIVER_ID) : null;
-                    String receiverID = receiverMap != null ? (String) receiverMap.get("id") : null;
+                    String senderID = document.getString(Constants.SENDER_ID);
+                    Map<String, Object> receiverMap = (Map<String, Object>) document.get(Constants.RECEIVER_ID);
 
-                    if (senderID != null && receiverID != null) {
+                    if (senderID != null && receiverMap != null) {
+                        String receiverID = (String) receiverMap.get("id");
+                        String receiverName = (String) receiverMap.get("name");
+                        String receiverImage = (String) receiverMap.get("image");
+
                         ChatMessage chatMessage = new ChatMessage();
                         chatMessage.senderId = senderID;
                         chatMessage.receiverId = receiverID;
 
                         if (preferenceManager.getString(Constants.USER_ID).equals(senderID)) {
-                            chatMessage.chatImg = (String) receiverMap.get("image"); // Assuming image is a key in the map
-                            chatMessage.chatName = (String) receiverMap.get("name"); // Assuming name is a key in the map
+                            chatMessage.chatName = receiverName != null ? receiverName : "Unknown";
+                            chatMessage.chatImg = receiverImage != null ? receiverImage : null;
                             chatMessage.chatId = receiverID;
                         } else {
-                            chatMessage.chatImg = document.getString(Constants.SENDER_IMG);
                             chatMessage.chatName = document.getString(Constants.SENDER_NAME);
+                            chatMessage.chatImg = document.getString(Constants.SENDER_IMG);
                             chatMessage.chatId = senderID;
                         }
 
@@ -154,9 +156,7 @@ public class MainActivity extends BaseActivity implements ChatListener {
                         Map<String, Object> receiverMap = document.contains(Constants.RECEIVER_ID) ? (Map<String, Object>) document.get(Constants.RECEIVER_ID) : null;
                         String receiverId = receiverMap != null ? (String) receiverMap.get("id") : null;
 
-                        if (senderId != null && receiverId != null &&
-                                chats.get(i).senderId.equals(senderId) &&
-                                chats.get(i).receiverId.equals(receiverId)) {
+                        if (senderId != null && receiverId != null && chats.get(i).senderId.equals(senderId) && chats.get(i).receiverId.equals(receiverId)) {
 
                             chats.get(i).message = document.getString(Constants.LAST_MSG);
                             chats.get(i).dateObj = document.getDate(Constants.TIME_STAMP);

@@ -2,7 +2,6 @@ package com.example.chatapp.utils;
 
 public class Constants {
     public static final String COLLECTION_USERS = "users";
-    public static final String EMAIL = "email";
     public static final String USERNAME = "uName";
     public static final String PASSWORD = "password";
     public static final String PREFERENCE_NAME = "geeksChatAppPreference";

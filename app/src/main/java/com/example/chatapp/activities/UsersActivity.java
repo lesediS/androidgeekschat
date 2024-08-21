@@ -56,7 +56,6 @@ public class UsersActivity extends BaseActivity implements UserListener {
                     User user = new User();
 
                     user.uName = snapshot.getString(Constants.USERNAME);
-                    user.email = snapshot.getString(Constants.EMAIL);
                     user.img = snapshot.getString(Constants.IMAGE);
                     user.token = snapshot.getString(Constants.FCM_TOKEN);
                     user.id = snapshot.getId();
