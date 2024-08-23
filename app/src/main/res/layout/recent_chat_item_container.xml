@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imgProfile"
-        app:layout_constraintTop_toBottomOf="@id/recentChatTxt"
+        app:layout_constraintTop_toBottomOf="@id/fNameTxt"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:ellipsize="end"

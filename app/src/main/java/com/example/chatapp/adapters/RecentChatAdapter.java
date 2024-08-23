@@ -3,7 +3,6 @@ package com.example.chatapp.adapters;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -74,12 +73,12 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Ch
             }
         }
     }*/
+
         void setData(ChatMessage chatMessage) {
             if (chatMessage.chatImg != null && !chatMessage.chatImg.isEmpty()) {
                 binding.imgProfile.setImageBitmap(getConvertImg(chatMessage.chatImg));
             } else {
-                // Set a default or placeholder image here if chatImg is null or empty
-                binding.imgProfile.setImageResource(R.drawable.background_pic);
+                binding.imgProfile.setImageResource(R.drawable.background_pic); // Default placeholder image
             }
             binding.fNameTxt.setText(chatMessage.chatName != null ? chatMessage.chatName : "Unknown");
             binding.recentChatTxt.setText(chatMessage.message != null ? chatMessage.message : "No message");
@@ -93,14 +92,15 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Ch
         }
 
 
+
         private Bitmap getConvertImg(String encodedImg) {
-        if (encodedImg != null) { // Check if encodedImg is not null
-            byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        } else {
-            // Handle the case where encodedImg is null
-            return null; // Or return a placeholder Bitmap if you have one
+            if (encodedImg != null) { // Check if encodedImg is not null
+                byte[] bytes = Base64.decode(encodedImg, Base64.DEFAULT);
+                return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            } else {
+                // Handle the case where encodedImg is null
+                return null; // Or return a placeholder Bitmap if you have one
+            }
         }
     }
-}
 }

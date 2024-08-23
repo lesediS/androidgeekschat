@@ -1,9 +1,5 @@
 package com.example.chatapp.activities;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,9 +8,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chatapp.databinding.ActivityRegisterBinding;
 import com.example.chatapp.utils.Constants;
@@ -42,14 +41,18 @@ public class RegisterActivity extends AppCompatActivity {
         if (preferenceManager.getBoolean(Constants.IS_LOGGED_IN)) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            finish();
         }
         setListeners();
     }
 
     private void setListeners() {
-        //TODO: onBackPressed() is deprecated, onBackPressedDispatcher() does not work, getOnBackInvokedDispatcher(), Call requires API level 33 (current min is 19): android.app.Activity#getOnBackInvokedDispatcher More... (Ctrl+F1)
-        binding.loginTxt.setOnClickListener(v -> onBackPressed());
-
+        // Handle back press for API 33+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            binding.loginTxt.setOnClickListener(v -> onBackPressed());
+        } else {
+            binding.loginTxt.setOnClickListener(v -> super.onBackPressed());
+        }
 
         binding.registerBtn.setOnClickListener(v -> {
             if (isValidRegDetails()) {
@@ -76,31 +79,32 @@ public class RegisterActivity extends AppCompatActivity {
         user.put(Constants.USERNAME, binding.regUsername.getText().toString());
         user.put(Constants.PASSWORD, binding.regPassword.getText().toString());
         user.put(Constants.IMAGE, encodedImg);
-        database.collection(Constants.COLLECTION_USERS).add(user).addOnSuccessListener(documentReference -> {
-            loading(false);
-            preferenceManager.putBoolean(Constants.IS_LOGGED_IN, true);
-            preferenceManager.putString(Constants.USER_ID, documentReference.getId());
-            preferenceManager.putString(Constants.USERNAME, binding.regUsername.getText().toString());
-            preferenceManager.putString(Constants.IMAGE, encodedImg);
+        database.collection(Constants.COLLECTION_USERS).add(user)
+                .addOnSuccessListener(documentReference -> {
+                    loading(false);
+                    preferenceManager.putBoolean(Constants.IS_LOGGED_IN, true);
+                    preferenceManager.putString(Constants.USER_ID, documentReference.getId());
+                    preferenceManager.putString(Constants.USERNAME, binding.regUsername.getText().toString());
+                    preferenceManager.putString(Constants.IMAGE, encodedImg);
 
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }).addOnFailureListener(exception -> {
-            loading(false);
-            showToast(exception.getMessage());
-        });
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
+                .addOnFailureListener(exception -> {
+                    loading(false);
+                    showToast(exception.getMessage());
+                });
     }
 
     private String encImage(Bitmap bitmap) {
         int width = 150;
         int height = bitmap.getHeight() * width / bitmap.getWidth();
 
-        Bitmap prevBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        prevBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
 
         byte[] bytes = outputStream.toByteArray();
         return Base64.encodeToString(bytes, Base64.DEFAULT);
@@ -114,14 +118,19 @@ public class RegisterActivity extends AppCompatActivity {
                         try {
                             assert imgUri != null;
                             InputStream stream = getContentResolver().openInputStream(imgUri);
-                            Bitmap map = BitmapFactory.decodeStream(stream);
-                            binding.regProfilePic.setImageBitmap(map);
+                            Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                            binding.regProfilePic.setImageBitmap(bitmap);
                             binding.addImgTxt.setVisibility(View.GONE);
-                            encodedImg = encImage(map);
+                            encodedImg = encImage(bitmap);
                         } catch (FileNotFoundException ex) {
+                            showToast("File not found");
                             ex.printStackTrace();
                         }
+                    } else {
+                        showToast("No image selected");
                     }
+                } else {
+                    showToast("Image selection failed");
                 }
             }
     );
@@ -147,5 +156,4 @@ public class RegisterActivity extends AppCompatActivity {
             binding.progressBar.setVisibility(View.INVISIBLE);
         }
     }
-
 }

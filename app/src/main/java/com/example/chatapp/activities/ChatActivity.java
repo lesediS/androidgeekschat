@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 
 import com.example.chatapp.adapters.ChatAdapter;
@@ -26,9 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -58,9 +59,13 @@ public class ChatActivity extends BaseActivity {
     private void init() {
         preferenceManager = new PreferenceManager(getApplicationContext());
         chatMessageList = new ArrayList<>();
-        chatAdapter = new ChatAdapter(
-                chatMessageList, getBitmapEncodedString(receiverUser.img),
-                preferenceManager.getString(Constants.USER_ID));
+        try {
+            chatAdapter = new ChatAdapter(
+                    chatMessageList, getBitmapEncodedString(receiverUser.img),
+                    preferenceManager.getString(Constants.USER_ID));
+        } catch (NullPointerException e) {
+            Log.e("Err opening in ChatActi", e.getMessage());
+        }
         binding.chatRecycler.setAdapter(chatAdapter);
         database = FirebaseFirestore.getInstance();
     }
@@ -109,11 +114,11 @@ public class ChatActivity extends BaseActivity {
         database.collection(Constants.COLLECTION_USERS).document(
                 receiverUser.id
         ).addSnapshotListener(ChatActivity.this, (value, error) -> {
-            if(error != null){
+            if (error != null) {
                 return;
             }
-            if(value != null){
-                if(value.getLong(Constants.AVAILABILITY) != null){
+            if (value != null) {
+                if (value.getLong(Constants.AVAILABILITY) != null) {
                     int available = Objects.requireNonNull(
                             value.getLong(Constants.AVAILABILITY)
                     ).intValue();
@@ -121,7 +126,7 @@ public class ChatActivity extends BaseActivity {
                 }
             }
 
-            if(isReceiverAvailable){
+            if (isReceiverAvailable) {
                 binding.textAvail.setVisibility(View.VISIBLE);
             } else {
                 binding.textAvail.setVisibility(View.GONE);
@@ -151,7 +156,11 @@ public class ChatActivity extends BaseActivity {
                 Collections.sort(chatMessageList, Comparator.comparing(obj -> obj.dateObj));
             }
             if (count == 0) {
-                chatAdapter.notifyDataSetChanged();
+                try {
+                    chatAdapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    Log.d("Error chat line 162", e.getMessage());
+                }
             } else {
                 chatAdapter.notifyItemRangeInserted(chatMessageList.size(), chatMessageList.size());
                 binding.chatRecycler.smoothScrollToPosition(chatMessageList.size() - 1);

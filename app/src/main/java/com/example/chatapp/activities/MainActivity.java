@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,14 +61,43 @@ public class MainActivity extends BaseActivity implements ChatListener {
         chatsAdapter = new RecentChatAdapter(chats, this);
         binding.recentChatsRecycler.setAdapter(chatsAdapter);
         database = FirebaseFirestore.getInstance();
+        binding.logoutImg.setOnClickListener(v -> logout());
     }
 
     private void setListeners() {
-        binding.logoutImg.setOnClickListener(v -> logout());
         binding.newChatBtn.setOnClickListener(v -> {
-            startActivity((new Intent(getApplicationContext(), UsersActivity.class)));
+            // Fetch the list of users from Firestore
+            database.collection(Constants.COLLECTION_USERS)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            List<User> userList = new ArrayList<>();
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                                User user = documentSnapshot.toObject(User.class);
+                                if (user != null) {
+                                    userList.add(user);
+                                }
+                            }
+
+                            if (!userList.isEmpty()) {
+                                // Pass the list of users to the new activity
+                                Intent intent = new Intent(getApplicationContext(), UsersActivity.class);
+                                intent.putExtra("userList", (Serializable) userList);
+                                startActivity(intent);
+                            } else {
+                                showToast("No users found");
+                            }
+                        } else {
+                            showToast("No users found");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore Error", e.getMessage());
+                        showToast("Failed to load users");
+                    });
         });
     }
+
 
     //TODO: Move logout button and stuff to under/in profile
     private void logout() {
@@ -101,80 +131,75 @@ public class MainActivity extends BaseActivity implements ChatListener {
         database.collection(Constants.COLLECTION_CONVERSATIONS)
                 .whereEqualTo(Constants.SENDER_ID, preferenceManager.getString(Constants.USER_ID))
                 .addSnapshotListener(eventListener);
+
         database.collection(Constants.COLLECTION_CONVERSATIONS)
                 .whereEqualTo("receiverId.id", preferenceManager.getString(Constants.USER_ID)) // Access nested map field
                 .addSnapshotListener(eventListener);
     }
 
-
     private final EventListener<QuerySnapshot> eventListener = (value, error) -> {
         if (error != null) {
-            // Log the error only if it's not null
-            if (error.getMessage() != null) {
-                Log.e("Firestore Error", error.getMessage());
-                return;
-            } else {
-                Log.e("Event listener error", "Unknown error occurred.");
-            }
+            Log.e("Firestore Error", error.getMessage());
             return;
         }
 
         if (value != null) {
             for (DocumentChange documentChange : value.getDocumentChanges()) {
                 DocumentSnapshot document = documentChange.getDocument();
+                String senderID = document.getString(Constants.SENDER_ID);
+                Map<String, Object> receiverMap = (Map<String, Object>) document.get(Constants.RECEIVER_ID);
 
-                if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                    String senderID = document.getString(Constants.SENDER_ID);
-                    Map<String, Object> receiverMap = (Map<String, Object>) document.get(Constants.RECEIVER_ID);
+                if (senderID != null && receiverMap != null) {
+                    String receiverID = (String) receiverMap.get("id");
+                    String receiverName = (String) receiverMap.get("name");
+                    String receiverImage = (String) receiverMap.get("image");
 
-                    if (senderID != null && receiverMap != null) {
-                        String receiverID = (String) receiverMap.get("id");
-                        String receiverName = (String) receiverMap.get("name");
-                        String receiverImage = (String) receiverMap.get("image");
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.senderId = senderID;
+                    chatMessage.receiverId = receiverID;
 
-                        ChatMessage chatMessage = new ChatMessage();
-                        chatMessage.senderId = senderID;
-                        chatMessage.receiverId = receiverID;
-
-                        if (preferenceManager.getString(Constants.USER_ID).equals(senderID)) {
-                            chatMessage.chatName = receiverName != null ? receiverName : "Unknown";
-                            chatMessage.chatImg = receiverImage != null ? receiverImage : null;
-                            chatMessage.chatId = receiverID;
-                        } else {
-                            chatMessage.chatName = document.getString(Constants.SENDER_NAME);
-                            chatMessage.chatImg = document.getString(Constants.SENDER_IMG);
-                            chatMessage.chatId = senderID;
-                        }
-
-                        chatMessage.message = document.getString(Constants.LAST_MSG);
-                        chatMessage.dateObj = document.getDate(Constants.TIME_STAMP);
-                        chats.add(chatMessage);
+                    if (preferenceManager.getString(Constants.USER_ID).equals(senderID)) {
+                        chatMessage.chatName = receiverName != null ? receiverName : "Unknown";
+                        chatMessage.chatImg = receiverImage != null ? receiverImage : null;
+                        chatMessage.chatId = receiverID;
+                    } else {
+                        chatMessage.chatName = document.getString(Constants.SENDER_NAME);
+                        chatMessage.chatImg = document.getString(Constants.SENDER_IMG);
+                        chatMessage.chatId = senderID;
                     }
-                } else if (documentChange.getType() == DocumentChange.Type.MODIFIED) {
+
+                    chatMessage.message = document.getString(Constants.LAST_MSG);
+                    chatMessage.dateObj = document.getDate(Constants.TIME_STAMP);
+
+                    // Check if this chat already exists
+                    boolean exists = false;
                     for (int i = 0; i < chats.size(); i++) {
-                        String senderId = document.contains(Constants.SENDER_ID) ? document.getString(Constants.SENDER_ID) : null;
-                        Map<String, Object> receiverMap = document.contains(Constants.RECEIVER_ID) ? (Map<String, Object>) document.get(Constants.RECEIVER_ID) : null;
-                        String receiverId = receiverMap != null ? (String) receiverMap.get("id") : null;
-
-                        if (senderId != null && receiverId != null && chats.get(i).senderId.equals(senderId) && chats.get(i).receiverId.equals(receiverId)) {
-
-                            chats.get(i).message = document.getString(Constants.LAST_MSG);
-                            chats.get(i).dateObj = document.getDate(Constants.TIME_STAMP);
+                        ChatMessage existingChat = chats.get(i);
+                        if (existingChat.chatId.equals(chatMessage.chatId)) {
+                            // Update the existing chat message and move it to the top
+                            chats.remove(i);
+                            exists = true;
                             break;
                         }
                     }
+
+                    // Add the chat message at the top
+                    chats.add(0, chatMessage);
+
+                    // Sort chats by date in descending order
+                    Collections.sort(chats, (obj1, obj2) -> obj2.dateObj.compareTo(obj1.dateObj));
+
+                    // Notify the adapter about the change
+                    chatsAdapter.notifyDataSetChanged();
                 }
             }
 
-            Collections.sort(chats, (obj1, obj2) -> obj2.dateObj.compareTo(obj1.dateObj));
-            chatsAdapter.notifyDataSetChanged();
+            // Ensure the list is scrolled to the top
             binding.recentChatsRecycler.smoothScrollToPosition(0);
             binding.recentChatsRecycler.setVisibility(View.VISIBLE);
             binding.progressBar.setVisibility(View.GONE);
         }
-
     };
-
 
     private void tokenUpdate(String token) {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
@@ -191,8 +216,12 @@ public class MainActivity extends BaseActivity implements ChatListener {
 
     @Override
     public void onChatClicked(User user) {
-        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-        intent.putExtra(Constants.USER, user);
-        startActivity(intent);
+        try{
+            Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+            intent.putExtra(Constants.USER, user);
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e("Opening chat error", e.getMessage());
+        }
     }
 }
